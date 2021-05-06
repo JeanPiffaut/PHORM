@@ -29,7 +29,7 @@ abstract class ORM implements iORM
 
                 foreach ($column as $col => $value) {
 
-                    if($this->ValidateColumn($value) == false) {
+                    if($this->ValidateColumn($value) === false) {
 
                         return false;
                     }
@@ -92,12 +92,12 @@ abstract class ORM implements iORM
         }
     }
 
-    protected function setConditionColumns(array $condition, string $separation = "AND"): string
+    protected function setConditionColumns(array $condition, string $separation = "AND"): string|bool
     {
         $ret_condition = "";
         foreach ($condition as $column => $value) {
 
-            if($this->ValidateColumn($column)) {
+            if($this->ValidateColumn($column) === true) {
 
                 if(empty($ret_condition)) {
 
@@ -108,7 +108,8 @@ abstract class ORM implements iORM
                 }
             } else {
 
-                return false;
+                $ret_condition = false;
+                break;
             }
         }
 
@@ -143,7 +144,7 @@ abstract class ORM implements iORM
     public function Select(array|string $columns, ?array $conditions = null, string $order = null, string|int $limit = null): mysqli_result|false
     {
         $column = $this->setColumnsSeparated($columns);
-        if($column == false) {
+        if($column === false) {
 
             return false;
         }
@@ -154,7 +155,7 @@ abstract class ORM implements iORM
 
             $condition = $this->setConditionColumns($conditions);
 
-            if($condition == false) {
+            if($condition === false) {
 
                 return false;
             }
@@ -177,7 +178,7 @@ abstract class ORM implements iORM
     }
 
     /**
-     *
+     * Insert the data sent into the database according to the table that executes the function.
      * @param array $columns
      * @return bool|int|string
      */
@@ -214,5 +215,37 @@ abstract class ORM implements iORM
 
             return DBLastInsert();
         }
+    }
+
+    /**
+     * Updates the data of the current table and according to what is sent by parameters and with the conditions that
+     * are defined and meet the conditions of the table.
+     * @param array $columns
+     * @param array|null $conditions
+     * @return bool|mysqli_result
+     */
+    public function Update(array $columns, array|null $conditions = null): bool|mysqli_result
+    {
+        $column = $this->setConditionColumns($columns, ",");
+        if($column === false) {
+
+            return false;
+        }
+
+        $sql = "UPDATE " . $this->getTable() . " SET " . $column;
+
+        if($conditions !== null) {
+
+            $condition = $this->setConditionColumns($conditions);
+            if($conditions === false) {
+
+                return false;
+            }
+            $sql .= " WHERE " . $condition;
+        }
+
+        $sql .= "; ";
+
+        return DBQuery($sql);
     }
 }

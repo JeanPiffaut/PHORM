@@ -29,8 +29,17 @@ if(DBGetError() != false) {
 }
 
 $orm = new se_settings();
-$result = $orm->Insert(array("sese_id" => "asd" . rand(0,10000), "sese_value" => "aaa"));
-$result = $orm->Select(array("sese_id", "sese_value"), null, "sese_value ASC", 10);
+$result = $orm->Update(array("sese_valie" => "320"), array("sese_id" => "TOKEN_LIFETIME"));
+
+// Validate that there is no error in the query made
+if(DBGetError() != false) {
+
+    // We print the possible error (s) generated and cut the execution.
+    var_dump(DBGetError());
+    exit();
+}
+
+$result = $orm->Select(array("sese_id", "sese_value"), null, "sese_value ASC", 70);
 
 // Validate that there is no error in the query made
 if(DBGetError() != false) {
