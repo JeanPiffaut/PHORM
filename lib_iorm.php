@@ -12,5 +12,5 @@ interface iORM
      * @param mixed  $value
      * @return mixed
      */
-    public function setColumn(string $column, mixed $value): mixed;
+    public function setColumn(mixed $column, mixed $value): mixed;
 }

@@ -137,6 +137,7 @@ abstract class ORM implements iORM
             return true;
         } else {
 
+            DBSetError("The value '" . $value . "', does not meet the conditions to be inserted in its column.");
             return false;
         }
     }
@@ -189,16 +190,18 @@ abstract class ORM implements iORM
 
         foreach ($columns as $column => $value) {
 
-            if($this->ValidateColumn($column)) {
+            $value = $this->setColumn($column, DBEscapeString($value));
+
+            if($this->ValidateColumn($column) && $value !== false) {
 
                 if(empty($cols) && empty($vals)) {
 
                     $cols .= $column;
-                    $vals .= "'" . DBEscapeString($value) . "'";
+                    $vals .= "'" . $value . "'";
                 } else {
 
                     $cols .= ", " . $column;
-                    $vals .= ", '" . DBEscapeString($value) . "'";
+                    $vals .= ", '" . $value . "'";
                 }
             } else {
 
