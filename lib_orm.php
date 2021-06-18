@@ -251,4 +251,22 @@ abstract class ORM implements iORM
 
         return DBQuery($sql);
     }
+
+    public function Delete(array|null $conditions = null)
+    {
+        $sql = "DELETE FROM " . $this->getTable();
+        if($conditions !== null) {
+
+            $condition = $this->setConditionColumns($conditions);
+            if($conditions === false) {
+
+                return false;
+            }
+            $sql .= " WHERE " . $condition;
+        }
+
+        $sql .= "; ";
+
+        return DBQuery($sql);
+    }
 }
