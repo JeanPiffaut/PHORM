@@ -7,7 +7,7 @@ use function DBFunctions\DBFetch;
 use function DBFunctions\DBGetError;
 use function DBFunctions\DBNumRows;
 
-include_once dirname(__FILE__) . "/lib_database.php";
+include_once dirname(__FILE__) . "/src/lib_database.php";
 include_once dirname(__FILE__) . "/orm_se_settings.php";
 
 $host     = "localhost";
